@@ -3,26 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Criadero de Conejos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Scripts y Estilos -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('conejos.index') }}">Criadero de Conejos</a>
-            <div class="navbar-nav ms-auto">
-                <span class="navbar-text me-3">Hola, {{ Auth::user()->name }}</span>
-                <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn btn-outline-light btn-sm">Cerrar sesión</button>
-                </form>
+<body class="font-sans antialiased bg-gray-50">
+    <nav class="bg-indigo-700 shadow-lg mb-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a class="text-white text-xl font-bold" href="{{ route('conejos.index') }}">Criadero de Conejos</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-white">Hola, {{ Auth::user()->name }}</span>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-800 hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-150">
+                            Cerrar sesión
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </nav>
-    <main>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         @yield('content')
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @yield('scripts')
 </body>
-</html> 
+</html>
