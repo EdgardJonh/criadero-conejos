@@ -93,14 +93,20 @@
                             <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" id="foto_principal_icon">
                                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-                            <div class="flex text-sm text-gray-600">
-                                <label for="foto_principal" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                    <span>Subir foto</span>
-                                    <input id="foto_principal" name="foto_principal" type="file" class="sr-only" accept="image/*" required>
-                                </label>
-                                <p class="pl-1">o arrastrar y soltar</p>
+                            <div class="flex flex-col text-sm text-gray-600 space-y-2">
+                                <div class="flex space-x-4">
+                                    <label for="foto_principal" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                        <span>📁 Subir foto</span>
+                                        <input id="foto_principal" name="foto_principal" type="file" class="sr-only" accept="image/*" required>
+                                    </label>
+                                    <button type="button" id="camera_principal" class="bg-green-600 text-white px-3 py-1 rounded-md font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                        📷 Tomar foto
+                                    </button>
+                                </div>
+                                <p class="text-xs">o arrastrar y soltar</p>
                             </div>
-                            <p class="text-xs text-gray-500">PNG, JPG hasta 1MB</p>
+                            <p class="text-xs text-gray-500">PNG, JPG hasta 50MB</p>
+                            <p class="text-xs text-green-600 font-medium" id="camera_status_principal">📱 Cámara disponible en móviles</p>
                         </div>
                     </div>
                     <!-- Preview de foto principal -->
@@ -121,18 +127,34 @@
                             <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" id="fotos_adicionales_icon">
                                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-                            <div class="flex text-sm text-gray-600">
-                                <label for="fotos_adicionales" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                    <span>Subir fotos</span>
-                                    <input id="fotos_adicionales" name="fotos_adicionales[]" type="file" class="sr-only" accept="image/*" multiple>
-                                </label>
-                                <p class="pl-1">o arrastrar y soltar</p>
+                            <div class="flex flex-col text-sm text-gray-600 space-y-2">
+                                <div class="flex space-x-4">
+                                    <label for="fotos_adicionales" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                        <span>📁 Subir fotos</span>
+                                        <input id="fotos_adicionales" name="fotos_adicionales[]" type="file" class="sr-only" accept="image/*" multiple>
+                                    </label>
+                                    <button type="button" id="camera_adicionales" class="bg-green-600 text-white px-3 py-1 rounded-md font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                        📷 Tomar fotos
+                                    </button>
+                                </div>
+                                <p class="text-xs">o arrastrar y soltar</p>
                             </div>
-                            <p class="text-xs text-gray-500">PNG, JPG hasta 1MB cada una</p>
+                            <p class="text-xs text-gray-500">PNG, JPG hasta 50MB cada una</p>
+                            <p class="text-xs text-green-600 font-medium" id="camera_status_adicionales">📱 Cámara disponible en móviles</p>
                         </div>
                     </div>
                     <!-- Preview de fotos adicionales -->
                     <div id="preview-fotos-adicionales" class="mt-3 grid grid-cols-4 gap-2"></div>
+                    
+                    <!-- Botón para limpiar todas las fotos adicionales -->
+                    <div id="clear-adicionales-container" class="mt-2 hidden">
+                        <button type="button" 
+                                id="clear-fotos-adicionales" 
+                                class="text-sm text-red-600 hover:text-red-800 underline">
+                            🗑️ Limpiar todas las fotos
+                        </button>
+                    </div>
+                    
                     @error('fotos_adicionales.*')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -258,6 +280,11 @@
                    class="inline-flex justify-center py-3 px-6 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
                     Cancelar
                 </a>
+                <button type="button" 
+                        id="test-files-btn"
+                        class="inline-flex justify-center py-3 px-6 border border-yellow-300 shadow-sm text-sm font-medium rounded-lg text-yellow-700 bg-yellow-50 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-200">
+                    🧪 Test Archivos
+                </button>
                 <button type="submit" 
                         class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 transform hover:scale-105">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -347,6 +374,14 @@
         // Función para mostrar preview de fotos adicionales
         function showFotosAdicionalesPreview(files) {
             previewFotosAdicionales.innerHTML = '';
+            const clearContainer = document.getElementById('clear-adicionales-container');
+            
+            if (files.length === 0) {
+                clearContainer.classList.add('hidden');
+                return;
+            }
+            
+            clearContainer.classList.remove('hidden');
             
             Array.from(files).forEach((file, index) => {
                 if (file.type.startsWith('image/')) {
@@ -372,18 +407,42 @@
         // Event listener para fotos adicionales
         fotosAdicionalesInput.addEventListener('change', function(e) {
             const files = e.target.files;
+            console.log('📸 Fotos adicionales seleccionadas:', files.length, 'archivos');
+            console.log('📸 Input de fotos adicionales:', fotosAdicionalesInput);
+            console.log('📸 Input name:', fotosAdicionalesInput.name);
+            console.log('📸 Input multiple:', fotosAdicionalesInput.multiple);
+            
             if (files.length > 0) {
-                showFotosAdicionalesPreview(files);
+                // Acumular archivos en lugar de reemplazar
+                addFilesToInput(fotosAdicionalesInput, files);
+                
+                // Mostrar preview de todos los archivos acumulados
+                showFotosAdicionalesPreview(fotosAdicionalesInput.files);
+                
+                // Log de cada archivo
+                Array.from(fotosAdicionalesInput.files).forEach((file, index) => {
+                    console.log(`Archivo ${index + 1}:`, file.name, 'Tamaño:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
+                });
+            } else {
+                console.log('⚠️ No se seleccionaron archivos en fotos adicionales');
             }
         });
         
         // Función global para remover foto adicional
         window.removeFotoAdicional = function(index) {
+            console.log('🗑️ Removiendo foto adicional en índice:', index);
             const dt = new DataTransfer();
             const files = Array.from(fotosAdicionalesInput.files);
+            console.log('📸 Fotos antes de remover:', files.length);
+            
+            // Remover el archivo en el índice especificado
             files.splice(index, 1);
+            
+            // Agregar los archivos restantes al DataTransfer
             files.forEach(file => dt.items.add(file));
             fotosAdicionalesInput.files = dt.files;
+            
+            console.log('📸 Fotos después de remover:', fotosAdicionalesInput.files.length);
             
             // Actualizar preview
             showFotosAdicionalesPreview(fotosAdicionalesInput.files);
@@ -407,15 +466,37 @@
             fotosAdicionalesDropzone.classList.remove('border-indigo-400', 'bg-indigo-50');
             
             const files = e.dataTransfer.files;
+            console.log('📸 Archivos arrastrados a fotos adicionales:', files.length);
             if (files.length > 0) {
-                fotosAdicionalesInput.files = files;
-                showFotosAdicionalesPreview(files);
+                // Acumular archivos en lugar de reemplazar
+                addFilesToInput(fotosAdicionalesInput, files);
+                
+                // Mostrar preview de todos los archivos acumulados
+                showFotosAdicionalesPreview(fotosAdicionalesInput.files);
+                console.log('📸 Fotos adicionales actualizadas después de drag & drop:', fotosAdicionalesInput.files.length);
             }
         });
         
         // Validación del formulario
         const form = document.getElementById('conejoForm');
         form.addEventListener('submit', function(e) {
+            console.log('📤 Enviando formulario...');
+            
+            // Log de archivos que se van a enviar
+            console.log('📸 Foto principal:', fotoPrincipalInput.files.length, 'archivos');
+            if (fotoPrincipalInput.files.length > 0) {
+                Array.from(fotoPrincipalInput.files).forEach((file, index) => {
+                    console.log(`Foto principal ${index + 1}:`, file.name, 'Tamaño:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
+                });
+            }
+            
+            console.log('📸 Fotos adicionales:', fotosAdicionalesInput.files.length, 'archivos');
+            if (fotosAdicionalesInput.files.length > 0) {
+                Array.from(fotosAdicionalesInput.files).forEach((file, index) => {
+                    console.log(`Foto adicional ${index + 1}:`, file.name, 'Tamaño:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
+                });
+            }
+            
             const requiredFields = form.querySelectorAll('[required]');
             let isValid = true;
             
@@ -440,13 +521,209 @@
             if (!isValid) {
                 e.preventDefault();
                 alert('Por favor, completa todos los campos obligatorios y sube una foto principal.');
+            } else {
+                console.log('✅ Formulario válido, enviando...');
             }
+        });
+        
+        // Funcionalidad de cámara
+        const cameraPrincipalBtn = document.getElementById('camera_principal');
+        const cameraAdicionalesBtn = document.getElementById('camera_adicionales');
+        
+        // Detectar si es un dispositivo móvil
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                   ('ontouchstart' in window) || 
+                   (navigator.maxTouchPoints > 0);
+        }
+        
+        // Detectar si el dispositivo soporta cámara
+        function isCameraSupported() {
+            return 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices;
+        }
+        
+        // Mostrar/ocultar botones de cámara según soporte
+        function toggleCameraButtons() {
+            const isMobile = isMobileDevice();
+            const isSupported = isCameraSupported();
+            
+            // Mostrar botones en móviles siempre, en escritorio solo si hay soporte
+            const shouldShow = isMobile || isSupported;
+            
+            cameraPrincipalBtn.style.display = shouldShow ? 'block' : 'none';
+            cameraAdicionalesBtn.style.display = shouldShow ? 'block' : 'none';
+            
+            // Actualizar mensajes de estado
+            const statusPrincipal = document.getElementById('camera_status_principal');
+            const statusAdicionales = document.getElementById('camera_status_adicionales');
+            
+            if (isMobile) {
+                statusPrincipal.textContent = '📱 Toca "Tomar foto" para usar la cámara';
+                statusAdicionales.textContent = '📱 Toca "Tomar fotos" para usar la cámara';
+                console.log('📱 Dispositivo móvil detectado - Botones de cámara habilitados');
+            } else if (isSupported) {
+                statusPrincipal.textContent = '📷 Cámara disponible';
+                statusAdicionales.textContent = '📷 Cámara disponible';
+                console.log('📷 Cámara soportada en escritorio - Botones habilitados');
+            } else {
+                statusPrincipal.textContent = '💻 Solo subida de archivos';
+                statusAdicionales.textContent = '💻 Solo subida de archivos';
+                console.log('💻 Escritorio sin cámara - Solo subida de archivos');
+            }
+        }
+        
+        // Función para abrir la cámara
+        function openCamera(callback) {
+            try {
+                // Crear un input de archivo temporal con capture
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.capture = 'environment'; // Usar cámara trasera por defecto
+                input.style.display = 'none';
+                
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        console.log('📸 Foto capturada:', file.name, 'Tamaño:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
+                        callback(file);
+                    }
+                    // Limpiar el input después de usar
+                    document.body.removeChild(input);
+                };
+                
+                // Agregar al DOM temporalmente
+                document.body.appendChild(input);
+                
+                // Simular click para abrir la cámara
+                input.click();
+                
+            } catch (error) {
+                console.error('Error al abrir la cámara:', error);
+                alert('No se pudo abrir la cámara. Usa el botón "Subir foto" en su lugar.');
+            }
+        }
+        
+        // Función para convertir File a DataTransfer para fotos adicionales
+        function addFileToInput(input, file) {
+            console.log('📸 addFileToInput - Archivo recibido:', file.name);
+            console.log('📸 addFileToInput - Archivos existentes antes:', input.files.length);
+            
+            const dt = new DataTransfer();
+            const existingFiles = Array.from(input.files);
+            existingFiles.push(file);
+            existingFiles.forEach(f => dt.items.add(f));
+            input.files = dt.files;
+            
+            console.log('📸 addFileToInput - Archivos después de agregar:', input.files.length);
+            console.log('📸 addFileToInput - Archivos en DataTransfer:', Array.from(dt.files).map(f => f.name));
+        }
+        
+        // Función para acumular múltiples archivos en fotos adicionales
+        function addFilesToInput(input, newFiles) {
+            console.log('📸 addFilesToInput - Archivos recibidos:', newFiles.length);
+            console.log('📸 addFilesToInput - Archivos existentes antes:', input.files.length);
+            
+            const dt = new DataTransfer();
+            const existingFiles = Array.from(input.files);
+            
+            // Agregar archivos existentes
+            existingFiles.forEach(f => dt.items.add(f));
+            
+            // Agregar nuevos archivos
+            Array.from(newFiles).forEach(file => {
+                dt.items.add(file);
+            });
+            
+            input.files = dt.files;
+            
+            console.log('📸 addFilesToInput - Archivos después de agregar:', input.files.length);
+            console.log('📸 addFilesToInput - Archivos en DataTransfer:', Array.from(dt.files).map(f => f.name));
+        }
+        
+        // Event listener para cámara de foto principal
+        cameraPrincipalBtn.addEventListener('click', function() {
+            openCamera(function(file) {
+                // Asignar el archivo al input de foto principal
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                fotoPrincipalInput.files = dt.files;
+                
+                // Mostrar preview
+                showFotoPrincipalPreview(file);
+                
+                console.log('Foto principal tomada:', file.name);
+            });
+        });
+        
+        // Event listener para cámara de fotos adicionales
+        cameraAdicionalesBtn.addEventListener('click', function() {
+            openCamera(function(file) {
+                console.log('📸 Agregando foto adicional desde cámara:', file.name);
+                
+                // Agregar el archivo a las fotos adicionales
+                addFileToInput(fotosAdicionalesInput, file);
+                
+                console.log('📸 Total de fotos adicionales después de agregar:', fotosAdicionalesInput.files.length);
+                
+                // Mostrar preview
+                showFotosAdicionalesPreview(fotosAdicionalesInput.files);
+                
+                console.log('Foto adicional tomada:', file.name);
+            });
+        });
+        
+        // Inicializar botones de cámara
+        toggleCameraButtons();
+        
+        // Botón de test para verificar archivos
+        const testFilesBtn = document.getElementById('test-files-btn');
+        testFilesBtn.addEventListener('click', function() {
+            console.log('🧪 === TEST DE ARCHIVOS ===');
+            console.log('📸 Foto principal:', fotoPrincipalInput.files.length, 'archivos');
+            console.log('📸 Fotos adicionales:', fotosAdicionalesInput.files.length, 'archivos');
+            
+            // Verificar FormData
+            const formData = new FormData(form);
+            console.log('📤 FormData entries:');
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    console.log(`  ${key}:`, value.name, 'Tamaño:', (value.size / 1024 / 1024).toFixed(2) + 'MB');
+                } else {
+                    console.log(`  ${key}:`, value);
+                }
+            }
+            
+            // Verificar inputs específicos
+            console.log('📸 Input foto_principal files:', Array.from(fotoPrincipalInput.files).map(f => f.name));
+            console.log('📸 Input fotos_adicionales files:', Array.from(fotosAdicionalesInput.files).map(f => f.name));
+            
+            console.log('🧪 === FIN TEST ===');
+        });
+        
+        // Botón para limpiar todas las fotos adicionales
+        const clearFotosAdicionalesBtn = document.getElementById('clear-fotos-adicionales');
+        clearFotosAdicionalesBtn.addEventListener('click', function() {
+            console.log('🗑️ Limpiando todas las fotos adicionales');
+            
+            // Limpiar el input
+            fotosAdicionalesInput.value = '';
+            
+            // Limpiar el preview
+            showFotosAdicionalesPreview([]);
+            
+            console.log('✅ Fotos adicionales limpiadas');
         });
         
         // Debug: Mostrar información en consola
         console.log('Formulario de conejos cargado correctamente');
         console.log('Foto principal input:', fotoPrincipalInput);
         console.log('Fotos adicionales input:', fotosAdicionalesInput);
+        console.log('Botones de cámara configurados');
+        console.log('User Agent:', navigator.userAgent);
+        console.log('Es móvil:', isMobileDevice());
+        console.log('Soporte cámara:', isCameraSupported());
+        console.log('Touch points:', navigator.maxTouchPoints);
     });
 </script>
 @endsection

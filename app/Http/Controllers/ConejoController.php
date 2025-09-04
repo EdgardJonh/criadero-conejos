@@ -39,8 +39,8 @@ class ConejoController extends Controller
 
                     $request->validate([
             'nombre' => 'required|string|max:255',
-            'foto_principal' => 'required|image|mimes:jpeg,png,jpg|max:1024',
-            'fotos_adicionales.*' => 'image|mimes:jpeg,png,jpg|max:1024',
+            'foto_principal' => 'required|image|mimes:jpeg,png,jpg|max:51200',
+            'fotos_adicionales.*' => 'image|mimes:jpeg,png,jpg|max:51200',
             'numero' => 'required|string|max:255',
             'raza' => 'required|string|max:255',
             'color' => 'nullable|string|max:255',
@@ -66,11 +66,24 @@ class ConejoController extends Controller
 
             // Guardar fotos adicionales
             $fotosAdicionales = [];
+            \Log::info('Verificando fotos adicionales', [
+                'has_files' => $request->hasFile('fotos_adicionales'),
+                'files_count' => $request->hasFile('fotos_adicionales') ? count($request->file('fotos_adicionales')) : 0,
+                'all_files' => $request->allFiles()
+            ]);
+            
             if ($request->hasFile('fotos_adicionales')) {
-                foreach ($request->file('fotos_adicionales') as $foto) {
+                foreach ($request->file('fotos_adicionales') as $index => $foto) {
+                    \Log::info("Procesando foto adicional {$index}", [
+                        'original_name' => $foto->getClientOriginalName(),
+                        'size' => $foto->getSize(),
+                        'mime_type' => $foto->getMimeType()
+                    ]);
                     $fotosAdicionales[] = $foto->store('conejos', 'public');
                 }
                 \Log::info('Fotos adicionales guardadas', ['paths' => $fotosAdicionales]);
+            } else {
+                \Log::info('No se encontraron fotos adicionales para guardar');
             }
 
             // Preparar datos para crear el conejo
@@ -158,8 +171,8 @@ class ConejoController extends Controller
         $conejo = Conejo::findOrFail($id);
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'foto_principal' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
-            'fotos_adicionales.*' => 'image|mimes:jpeg,png,jpg|max:1024',
+            'foto_principal' => 'nullable|image|mimes:jpeg,png,jpg|max:51200',
+            'fotos_adicionales.*' => 'image|mimes:jpeg,png,jpg|max:51200',
             'numero' => 'required|string|max:255',
             'raza' => 'required|string|max:255',
             'color' => 'nullable|string|max:255',
