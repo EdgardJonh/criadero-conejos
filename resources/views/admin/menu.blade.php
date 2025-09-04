@@ -18,7 +18,15 @@
                     <span class="text-gray-700 font-medium">Gestión de Conejos</span>
                 </div>
             </a>
-            <!-- Aquí puedes agregar más opciones de administración en el futuro -->
+            
+            <a href="{{ route('manejo-sanitario.index') }}" class="block px-4 py-3 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="text-gray-700 font-medium">Manejo Sanitario</span>
+                </div>
+            </a>
         </div>
         
         <form method="POST" action="{{ route('logout') }}">

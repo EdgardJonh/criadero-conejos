@@ -73,7 +73,7 @@
                     
                     <div class="border-b border-gray-200 pb-3">
                         <dt class="text-sm font-medium text-gray-500">Precio</dt>
-                        <dd class="mt-1 text-sm text-gray-900 font-semibold">${{ number_format($conejo->precio, 2) }}</dd>
+                        <dd class="mt-1 text-sm text-gray-900 font-semibold">{{ \App\Helpers\CLPHelper::format($conejo->precio) }}</dd>
                     </div>
                     
                     <div>

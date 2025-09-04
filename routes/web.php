@@ -18,6 +18,7 @@ Route::get('/admin', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('conejos', App\Http\Controllers\ConejoController::class);
+    Route::resource('manejo-sanitario', App\Http\Controllers\ManejoSanitarioController::class);
 });
 
 Route::middleware('auth')->group(function () {

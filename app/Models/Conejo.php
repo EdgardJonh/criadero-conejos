@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Conejo extends Model
 {
@@ -24,6 +25,14 @@ class Conejo extends Model
         'fotos_adicionales' => 'array',
         'fecha_nacimiento' => 'date',
         'disponible' => 'boolean',
-        'precio' => 'decimal:2',
+        'precio' => 'integer',
     ];
+
+    /**
+     * Relación con el modelo ManejoSanitario
+     */
+    public function manejoSanitario(): HasMany
+    {
+        return $this->hasMany(ManejoSanitario::class);
+    }
 }
